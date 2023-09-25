@@ -1,6 +1,10 @@
 #version 450
 	layout(location = 0) in vec3 vPos;
 	layout(location = 1) in vec2 uvCoord;
+
+	uniform vec3 iResolution;           // viewport resolution (in pixels)
+	uniform float iTime;                 // shader playback time (in seconds)
+
 	out vec2 FragCoord;
 	void main(){
 		FragCoord = uvCoord;

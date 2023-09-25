@@ -1,6 +1,6 @@
 #version 450
-uniform vec3      iResolution;           // viewport resolution (in pixels)
-uniform float     iTime;                 // shader playback time (in seconds)
+uniform vec3 iResolution;           // viewport resolution (in pixels)
+uniform float iTime;                 // shader playback time (in seconds)
 out vec4 FragColor;
 in vec2 FragCoord;
 void main(){
@@ -19,9 +19,7 @@ void main(){
     
     //Background
     vec3 Background = smoothstep(Day, Night, Gradient);
-    
     float sunDistance = step(length(uv - circle),0.1f);
-    
     float hills = 1.0 - step(cos(uv.x*5.0) * 0.2 + 0.4,uv.y);
     
     //Blend dark grey hills
@@ -31,3 +29,4 @@ void main(){
 
     FragColor = vec4(color,1.0);
 }
+

@@ -70,9 +70,6 @@ int main() {
 	std::string vertexShaderSource = qm::loadShaderSourceFromFile("assets/vertexShader.vert");
 	std::string fragmentShaderSource = qm::loadShaderSourceFromFile("assets/fragmentShader.frag");
 	qm::Shader shader("assets/vertexShader.vert", "assets/fragmentShader.frag");
-	shader.use();
-	shader.setFloat("_Brightness", 1.0);
-	shader.setVec3("_Color", 255,255,255);
 	unsigned int vao = createVAO(vertices, 4, indices, 6);
 
 	//Wireframe
@@ -87,6 +84,12 @@ int main() {
 		glClearColor(0.3f, 0.4f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
+
+		float time = (float)glfwGetTime();
+
+		shader.use();
+		shader.setFloat("iTime", time);
+		shader.setVec3("iResolution", SCREEN_WIDTH, SCREEN_HEIGHT,0);
 
 		//Render UI
 		{
