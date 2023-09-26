@@ -89,7 +89,7 @@ int main() {
 
 		shader.use();
 		shader.setFloat("iTime", time);
-		shader.setVec3("iResolution", SCREEN_WIDTH, SCREEN_HEIGHT,0);
+		shader.setVec2("iResolution", SCREEN_WIDTH, SCREEN_HEIGHT);
 
 		//Render UI
 		{

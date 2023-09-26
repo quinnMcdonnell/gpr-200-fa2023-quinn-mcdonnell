@@ -1,10 +1,10 @@
 #version 450
-uniform vec3 iResolution;           // viewport resolution (in pixels)
+uniform vec2 iResolution;           // viewport resolution (in pixels)
 uniform float iTime;                 // shader playback time (in seconds)
 out vec4 FragColor;
 in vec2 FragCoord;
 void main(){
-	vec2 uv = FragCoord/iResolution.xy;
+	vec2 uv = FragCoord;
     float aspectRatio = iResolution.x/iResolution.y;
     float t = 0.75f*sin(iTime)+0.5f;
     
@@ -28,5 +28,6 @@ void main(){
     color = mix(color,vec3(0.05),hills);
 
     FragColor = vec4(color,1.0);
+
 }
 
