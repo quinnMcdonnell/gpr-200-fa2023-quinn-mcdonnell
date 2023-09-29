@@ -9,6 +9,7 @@
 #include <imgui_impl_opengl3.h>
 
 #include <ew/shader.h>
+#include <qm/texture.h>
 
 struct Vertex {
 	float x, y, z;
@@ -61,8 +62,11 @@ int main() {
 	ew::Shader shader("assets/vertexShader.vert", "assets/fragmentShader.frag");
 
 	unsigned int quadVAO = createVAO(vertices, 4, indices, 6);
+	unsigned int brickTexture = qm::loadTexture("assets/character.png", GL_REPEAT, GL_LINEAR);
 
 	glBindVertexArray(quadVAO);
+
+	
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
