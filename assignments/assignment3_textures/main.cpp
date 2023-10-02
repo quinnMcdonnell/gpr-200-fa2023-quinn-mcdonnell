@@ -100,6 +100,7 @@ int main() {
 		
 		Character.use();
 		Character.setInt("_Texture", 1);
+		Character.setFloat("_time", time);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, TextureA);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, NULL);
