@@ -12,26 +12,11 @@ namespace qm
 		int width, height, numComponents;
 
 		unsigned int texture;
+		unsigned int colorNum;
 		glGenTextures(1, &texture);
 		glBindTexture(GL_TEXTURE_2D, texture);
 
 		unsigned char* data = stbi_load(filePath, &width, &height, &numComponents, 0);
-
-		switch(numComponents)
-		{
-		case 1:
-
-			break;
-
-		case 2:
-			break;
-
-		case 3:
-			break;
-
-		case 4:
-			break;
-		}
 
 		if (data == NULL)
 		{
@@ -39,8 +24,27 @@ namespace qm
 			stbi_image_free(data);
 			return 0;
 		}
+	
+		switch (numComponents)
+		{
+		case 1:
+			colorNum = GL_RED;
+			break;
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		case 2:
+			colorNum = GL_RG;
+			break;
+
+		case 3:
+			colorNum = GL_RGB;
+			break;
+
+		case 4:
+			colorNum = GL_RGBA;
+			break;
+		}
+
+		glTexImage2D(GL_TEXTURE_2D, 0, colorNum, width, height, 0, colorNum, GL_UNSIGNED_BYTE, data);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapMode);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapMode);
