@@ -63,8 +63,16 @@ int main() {
 	ew::Shader Character("assets/character.vert", "assets/character.frag");
 
 	unsigned int quadVAO = createVAO(vertices, 4, indices, 6);
-	unsigned int TextureA = qm::loadTexture("assets/newCharacter.png", GL_REPEAT, GL_LINEAR);
+	unsigned int TextureA = qm::loadTexture("assets/newCharacter.png", GL_REPEAT, GL_NEAREST);
+
+
 	unsigned int TextureB = qm::loadTexture("assets/Background.png", GL_REPEAT, GL_LINEAR);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, TextureB);
+
+	unsigned int TextureC = qm::loadTexture("assets/noiseTexture.png", GL_REPEAT, GL_LINEAR);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, TextureC);
 
 	glBindVertexArray(quadVAO);
 	glEnable(GL_BLEND);
@@ -78,17 +86,21 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		Background.use();
-		Background.setInt("_Texture", 0);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, TextureB);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, TextureC);
+		Background.setInt("_Texture", 1);
+		Background.setInt("_Noise", 0);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, NULL);
 		
-
+		
 		Character.use();
 		Character.setInt("_Texture", 1);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, TextureA);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, NULL);
+		
 
 		//Render UI
 		{
