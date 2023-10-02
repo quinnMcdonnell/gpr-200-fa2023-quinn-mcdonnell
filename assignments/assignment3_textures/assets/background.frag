@@ -4,6 +4,7 @@ in vec2 UV;
 
 uniform sampler2D _Texture;
 uniform sampler2D _Noise;
+uniform float _time;
 
 void main(){
 	vec4 base = texture(_Texture,UV);

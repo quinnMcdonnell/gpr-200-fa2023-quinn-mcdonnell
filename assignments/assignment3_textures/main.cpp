@@ -85,6 +85,8 @@ int main() {
 		glClearColor(0.3f, 0.4f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		float time = (float)glfwGetTime();
+
 		Background.use();
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, TextureB);
@@ -92,6 +94,7 @@ int main() {
 		glBindTexture(GL_TEXTURE_2D, TextureC);
 		Background.setInt("_Texture", 1);
 		Background.setInt("_Noise", 0);
+		Background.setFloat("_time", time);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, NULL);
 		
 		
