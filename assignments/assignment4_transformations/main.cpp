@@ -56,7 +56,7 @@ int main() {
 	
 	//Cube mesh
 	ew::Mesh cubeMesh(ew::createCube(0.5f));
-	qm::Transform transform;
+	qm::Transform transform[4];
 	
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -66,7 +66,13 @@ int main() {
 
 		//Set uniforms
 		shader.use();
-		shader.setMat4("_model",transform.getModelMatrix());
+		shader.setMat4("_Model",transform[0].getModelMatrix()); //See how to update each cube's location
+		cubeMesh.draw();
+		shader.setMat4("_Model", transform[1].getModelMatrix());
+		cubeMesh.draw();
+		shader.setMat4("_Model", transform[2].getModelMatrix());
+		cubeMesh.draw();
+		shader.setMat4("_Model", transform[3].getModelMatrix());
 		cubeMesh.draw();
 
 		//Render UI
@@ -76,10 +82,17 @@ int main() {
 			ImGui::NewFrame();
 
 			ImGui::Begin("Transform");
-			//Not sure about how to set up the transform stuff in main, ask for help in order to get it working
-			ImGui::DragFloat3("Position", &transform.position.x, 0.05f);
-			ImGui::DragFloat3("Rotation", &transform.rotation.x, 1.0f);
-			ImGui::DragFloat3("Scale", &transform.scale.x, 0.05f);
+			for (size_t i = 0; i < 4; i++)
+			{
+				ImGui::PushID(i);
+				if (ImGui::CollapsingHeader("Transform")) {
+					ImGui::DragFloat3("Position", &transform[i].position.x, 0.05f);
+					ImGui::DragFloat3("Rotation", &transform[i].rotation.x, 0.05f);
+					ImGui::DragFloat3("Scale", &transform[i].scale.x, 0.05f);
+				}
+				ImGui::PopID();
+			}
+
 			ImGui::End();
 
 			ImGui::Render();

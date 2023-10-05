@@ -4,24 +4,10 @@
 
 namespace qm
 {
-	//Identity Matrix
-	
-	struct Transform {
-		ew::Vec3 position = ew::Vec3(0.0f, 0.0f, 0.0f);
-		ew::Vec3 rotation = ew::Vec3(0.0f, 0.0f, 0.0f); //Euler angles (degrees)
-		ew::Vec3 scale = ew::Vec3(1.0f, 1.0f, 1.0f);
-		ew::Mat4 getModelMatrix() const
-		{
-			ew::Mat4 modelMatrix = Scale(scale) * RotateX(rotation.x) * RotateY(rotation.y) * RotateZ(rotation.z) * Translate(position);
-			return modelMatrix;
-		}
-	};
-
-	
 	inline ew::Mat4 Identity()
 	{
 		return ew::Mat4(
-			1, 0, 0, 0,
+			1, 0, 0, 0, //column
 			0, 1, 0, 0,
 			0, 0, 1, 0,
 			0, 0, 0, 1
@@ -78,10 +64,23 @@ namespace qm
 	inline ew::Mat4 Translate(ew::Vec3 t) 
 	{ 
 		ew::Mat4 n = Identity();
-		n[0][3] = t.x;
-		n[1][3] = t.y;
-		n[2][3] = t.z;
+		n[3][0] = t.x;
+		n[3][1] = t.y;
+		n[3][2] = t.z;
 
 		return n;
+	};
+
+	//Identity Matrix
+
+	struct Transform {
+		ew::Vec3 position = ew::Vec3(0.0f, 0.0f, 0.0f);
+		ew::Vec3 rotation = ew::Vec3(0.0f, 0.0f, 0.0f); //Euler angles (degrees)
+		ew::Vec3 scale = ew::Vec3(1.0f, 1.0f, 1.0f);
+		ew::Mat4 getModelMatrix() const
+		{
+			ew::Mat4 modelMatrix = Scale(scale) * RotateX(rotation.x) * RotateY(rotation.y) * RotateZ(rotation.z) * Translate(position);
+			return modelMatrix;
+		}
 	};
 }
