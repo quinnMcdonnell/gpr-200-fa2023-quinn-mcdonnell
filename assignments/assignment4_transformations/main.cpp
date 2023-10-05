@@ -11,6 +11,7 @@
 #include <ew/shader.h>
 #include <ew/ewMath/vec3.h>
 #include <ew/procGen.h>
+#include <qm/transformations.h>
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 
@@ -55,6 +56,7 @@ int main() {
 	
 	//Cube mesh
 	ew::Mesh cubeMesh(ew::createCube(0.5f));
+	qm::Transform transform;
 	
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -64,9 +66,7 @@ int main() {
 
 		//Set uniforms
 		shader.use();
-
-		//TODO: Set model matrix uniform
-
+		shader.setMat4("_model",transform.getModelMatrix());
 		cubeMesh.draw();
 
 		//Render UI
@@ -76,6 +76,10 @@ int main() {
 			ImGui::NewFrame();
 
 			ImGui::Begin("Transform");
+			//Not sure about how to set up the transform stuff in main, ask for help in order to get it working
+			ImGui::DragFloat3("Position", &transform.position.x, 0.05f);
+			ImGui::DragFloat3("Rotation", &transform.rotation.x, 1.0f);
+			ImGui::DragFloat3("Scale", &transform.scale.x, 0.05f);
 			ImGui::End();
 
 			ImGui::Render();

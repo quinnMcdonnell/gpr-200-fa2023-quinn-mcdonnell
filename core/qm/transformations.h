@@ -12,21 +12,76 @@ namespace qm
 		ew::Vec3 scale = ew::Vec3(1.0f, 1.0f, 1.0f);
 		ew::Mat4 getModelMatrix() const
 		{
-			ew::Mat4 modelMatrix = position * rotation * scale;
+			ew::Mat4 modelMatrix = Scale(scale) * RotateX(rotation.x) * RotateY(rotation.y) * RotateZ(rotation.z) * Translate(position);
 			return modelMatrix;
 		}
 	};
 
 	
-	inline ew::Mat4 Identity() { };
+	inline ew::Mat4 Identity()
+	{
+		return ew::Mat4(
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1
+		);
+	};
 	
-	inline ew::Mat4 Scale(ew::Vec3 s) { };
+	inline ew::Mat4 Scale(ew::Vec3 s) 
+	{ 
+		ew::Mat4 n = Identity();
+		n[0][0] = s.x;
+		n[1][1] = s.y;
+		n[2][2] = s.z;
 
-	inline ew::Mat4 RotateX(float rad) { };
+		return n;
 
-	inline ew::Mat4 RotateY(float rad) { };
+	};
 
-	inline ew::Mat4 RotateZ(float rad) { };
+	inline ew::Mat4 RotateX(float rad) 
+	{ 
+		ew::Mat4 pitch = ew::Mat4(
+			1, 0, 0, 0,
+			0, cos(rad), -sin(rad), 0,
+			0, sin(rad), cos(rad), 0,
+			0, 0, 0, 1
+		);
 
-	inline ew::Mat4 Translate(ew::Vec3 t) { };
+		return pitch;
+	};
+
+	inline ew::Mat4 RotateY(float rad) 
+	{ 
+		ew::Mat4 yaw = ew::Mat4(
+			cos(rad), 0, sin(rad), 0,
+			0, 1, 0, 0,
+			-sin(rad), 0, cos(rad), 0,
+			0, 0, 0, 1
+		);
+
+		return yaw;
+	};
+
+	inline ew::Mat4 RotateZ(float rad) 
+	{ 
+		ew::Mat4 roll = ew::Mat4(
+			cos(rad), -sin(rad), 0, 0,
+			sin(rad), cos(rad), 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1
+		);
+
+		return roll;
+	};
+
+	inline ew::Mat4 Translate(ew::Vec3 t) 
+	{ 
+		ew::Mat4 n = Identity();
+		n[0][3] = t.x;
+		n[1][3] = t.y;
+		n[2][3] = t.z;
+
+		return n;
+	};
 }
