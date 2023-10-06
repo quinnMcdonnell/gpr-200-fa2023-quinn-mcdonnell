@@ -28,7 +28,7 @@ namespace qm
 	inline ew::Mat4 RotateX(float rad) 
 	{ 
 		ew::Mat4 pitch = ew::Mat4(
-			1, 0, 0, 0,
+			1, 0, 0, 0, //Column
 			0, cos(rad), -sin(rad), 0,
 			0, sin(rad), cos(rad), 0,
 			0, 0, 0, 1
@@ -79,7 +79,7 @@ namespace qm
 		ew::Vec3 scale = ew::Vec3(1.0f, 1.0f, 1.0f);
 		ew::Mat4 getModelMatrix() const
 		{
-			ew::Mat4 modelMatrix = Scale(scale) * RotateX(rotation.x) * RotateY(rotation.y) * RotateZ(rotation.z) * Translate(position);
+			ew::Mat4 modelMatrix = Translate(position) * RotateX(rotation.x) * RotateY(rotation.y) * RotateZ(rotation.z) * Scale(scale);
 			return modelMatrix;
 		}
 	};
