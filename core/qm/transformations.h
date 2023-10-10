@@ -71,6 +71,25 @@ namespace qm
 		return n;
 	};
 
+
+	inline ew::Mat4 LookAt(ew::Vec3 eye, ew::Vec3 target, ew::Vec3 up) 
+	{
+		
+	};
+
+	//Orthographic projection
+	inline ew::Mat4 Orthographic(float height, float aspect, float near, float far) 
+	{
+		
+	};
+
+	//Perspective projection
+	//fov = vertical aspect ratio (radians)
+	inline ew::Mat4 Perspective(float fov, float aspect, float near, float far) 
+	{
+		
+	};
+
 	//Identity Matrix
 
 	struct Transform {

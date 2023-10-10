@@ -102,6 +102,7 @@ int main() {
 				ImGui::PopID();
 			}
 			ImGui::Text("Camera");
+			//Camera GUI controls
 			ImGui::End();
 			
 			ImGui::Render();
