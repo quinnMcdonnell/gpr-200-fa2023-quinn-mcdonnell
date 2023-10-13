@@ -74,20 +74,45 @@ namespace qm
 
 	inline ew::Mat4 LookAt(ew::Vec3 eye, ew::Vec3 target, ew::Vec3 up) 
 	{
-		
+		ew::Vec3 f = ew::Normalize(eye - target);
+		ew::Vec3 r = ew::Normalize(ew::Cross(up,f));
+		ew::Vec3 u = ew::Normalize(ew::Cross(f,r));
+
+		return ew::Mat4(
+			r.x, u.x, f.x, 0,
+			r.y, u.y, f.y, 0,
+			r.z, u.z, f.z, 0,
+			-(r*eye), -(u*eye), -(f*eye), 1
+		);
 	};
 
 	//Orthographic projection
 	inline ew::Mat4 Orthographic(float height, float aspect, float near, float far) 
 	{
-		
+		float width = height * aspect;
+		float r = width / 2;
+		float t = height / 2;
+		float l = -r;
+		float b = -t;
+
+		return ew::Mat4(
+			2 / (r - l), 0, 0, 0,
+			0, 2 / (t - b), 0, 0,
+			0, 0, -(2 / (far - near)), 0,
+			-(r + l / r - l), -(t + b / t - b), -(far + near / far - near), 1
+		);
 	};
 
 	//Perspective projection
 	//fov = vertical aspect ratio (radians)
 	inline ew::Mat4 Perspective(float fov, float aspect, float near, float far) 
 	{
-		
+		return ew::Mat4(
+			1/(tan(fov*0.5) * aspect), 0, 0, 0,
+			0, 1/(tan(fov*0.5)), 0, 0,
+			0, 0, (near + far)/(near - far), 1,
+			0, 0, (2 * near * far)/(near - far), 0
+		);
 	};
 
 	//Identity Matrix

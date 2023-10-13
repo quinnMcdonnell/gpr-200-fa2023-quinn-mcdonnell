@@ -12,6 +12,9 @@
 #include <ew/procGen.h>
 #include <ew/transform.h>
 
+#include <qm/transformations.h>
+#include <qm/camera.h>
+
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 
 //Projection will account for aspect ratio!
@@ -58,6 +61,14 @@ int main() {
 	
 	//Cube mesh
 	ew::Mesh cubeMesh(ew::createCube(0.5f));
+
+	qm::Camera camera;
+	camera.position = ew::Vec3(0, 0, 5);
+	camera.target = ew::Vec3(0, 0, 0);
+	camera.fov = 60;
+	camera.orthoSize = 6;
+	camera.nearPlane = 0.1;
+	camera.farPlane = 100;
 
 	//Cube positions
 	for (size_t i = 0; i < NUM_CUBES; i++)
