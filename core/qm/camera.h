@@ -13,12 +13,12 @@ namespace qm {
 		float farPlane; //Far plane distance (+Z)
 		bool orthographic; //Perspective or orthographic?
 		float orthoSize; //Height of orthographic frustum
-		ew::Mat4 ViewMatrix() //World->View
+		inline ew::Mat4 ViewMatrix() //World->View
 		{
 			return LookAt(position, target, ew::Vec3(0, 1, 0));
 		}
-		
-		ew::Mat4 ProjectionMatrix() //View->Clip
+
+		inline ew::Mat4 ProjectionMatrix() //View->Clip
 		{
 			if (orthographic)
 			{
@@ -29,5 +29,5 @@ namespace qm {
 				return Perspective(fov, aspectRatio, nearPlane, farPlane);
 			}
 		}
-	}
+	};
 }

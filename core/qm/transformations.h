@@ -1,6 +1,7 @@
 #pragma once
 #include "../ew/ewMath/mat4.h"
 #include "../ew/ewMath/vec3.h"
+#include "../ew/ewMath/ewMath.h"
 
 namespace qm
 {
@@ -79,10 +80,10 @@ namespace qm
 		ew::Vec3 u = ew::Normalize(ew::Cross(f,r));
 
 		return ew::Mat4(
-			r.x, u.x, f.x, 0,
-			r.y, u.y, f.y, 0,
-			r.z, u.z, f.z, 0,
-			-(r*eye), -(u*eye), -(f*eye), 1
+			r.x, r.y, r.z, -(ew::Dot(r, eye)),
+			u.x, u.y, u.z, -(ew::Dot(u,eye)),
+			f.x, f.y, f.z, -(ew::Dot(f,eye)),
+			0, 0, 0, 1
 		);
 	};
 
@@ -96,10 +97,10 @@ namespace qm
 		float b = -t;
 
 		return ew::Mat4(
-			2 / (r - l), 0, 0, 0,
-			0, 2 / (t - b), 0, 0,
-			0, 0, -(2 / (far - near)), 0,
-			-(r + l / r - l), -(t + b / t - b), -(far + near / far - near), 1
+			2 / (r - l), 0, 0, -((r + l) / (r - l)),
+			0, 2 / (t - b), 0, -((t + b) / (t - b)),
+			0, 0, -(2 / (far - near)), -((far + near) / (far - near)),
+			0, 0, 0, 1
 		);
 	};
 
@@ -107,11 +108,12 @@ namespace qm
 	//fov = vertical aspect ratio (radians)
 	inline ew::Mat4 Perspective(float fov, float aspect, float near, float far) 
 	{
+		fov = ew::Radians(fov);
 		return ew::Mat4(
-			1/(tan(fov*0.5) * aspect), 0, 0, 0,
-			0, 1/(tan(fov*0.5)), 0, 0,
-			0, 0, (near + far)/(near - far), 1,
-			0, 0, (2 * near * far)/(near - far), 0
+			1/(tan(fov*0.5f) * aspect), 0, 0, 0,
+			0, 1/(tan(fov*0.5f)), 0, 0,
+			0, 0, (near + far)/(near - far), (2 * near * far) / (near - far),
+			0, 0, -1, 0
 		);
 	};
 
@@ -123,7 +125,7 @@ namespace qm
 		ew::Vec3 scale = ew::Vec3(1.0f, 1.0f, 1.0f);
 		ew::Mat4 getModelMatrix() const
 		{
-			ew::Mat4 modelMatrix = Translate(position) * RotateX(rotation.x) * RotateY(rotation.y) * RotateZ(rotation.z) * Scale(scale);
+			ew::Mat4 modelMatrix = qm::Translate(position)* RotateX(rotation.x)* RotateY(rotation.y)* RotateZ(rotation.z)* qm::Scale(scale);
 			return modelMatrix;
 		}
 	};

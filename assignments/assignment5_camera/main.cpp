@@ -66,9 +66,11 @@ int main() {
 	camera.position = ew::Vec3(0, 0, 5);
 	camera.target = ew::Vec3(0, 0, 0);
 	camera.fov = 60;
+	camera.aspectRatio = ((float)SCREEN_WIDTH / SCREEN_HEIGHT);
 	camera.orthoSize = 6;
-	camera.nearPlane = 0.1;
+	camera.nearPlane = 0.1f;
 	camera.farPlane = 100;
+	camera.orthographic = true;
 
 	//Cube positions
 	for (size_t i = 0; i < NUM_CUBES; i++)
@@ -85,6 +87,8 @@ int main() {
 
 		//Set uniforms
 		shader.use();
+		shader.setMat4("_View", camera.ViewMatrix());
+		shader.setMat4("_Projection", camera.ProjectionMatrix());
 
 		//TODO: Set model matrix uniform
 		for (size_t i = 0; i < NUM_CUBES; i++)
@@ -93,6 +97,7 @@ int main() {
 			shader.setMat4("_Model", cubeTransforms[i].getModelMatrix());
 			cubeMesh.draw();
 		}
+
 
 		//Render UI
 		{
@@ -113,7 +118,19 @@ int main() {
 				ImGui::PopID();
 			}
 			ImGui::Text("Camera");
-			//Camera GUI controls
+			ImGui::DragFloat3("Position", &camera.position.x, 0.5f);
+			ImGui::DragFloat3("Target", &camera.target.x, 0.5f);
+			ImGui::Checkbox("Orthographic", &camera.orthographic);
+			if (camera.orthographic)
+			{
+				ImGui::DragFloat("OrthoHeight", &camera.orthoSize, 0.5f);
+			}
+			else
+			{
+				ImGui::DragFloat("FOV", &camera.fov, 0.5f);
+			}
+			ImGui::DragFloat("Near Plane", &camera.nearPlane, 0.5f);
+			ImGui::DragFloat("Far Plane", &camera.farPlane, 0.5f);
 			ImGui::End();
 			
 			ImGui::Render();
