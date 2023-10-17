@@ -15,6 +15,7 @@
 #include <qm/transformations.h>
 #include <qm/camera.h>
 
+
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 
 //Projection will account for aspect ratio!
@@ -23,6 +24,81 @@ const int SCREEN_HEIGHT = 720;
 
 const int NUM_CUBES = 4;
 ew::Transform cubeTransforms[NUM_CUBES];
+
+void moveCamera(GLFWwindow* window, qm::Camera* camera, qm::CameraControls* controls, float deltaTime)
+{
+	if (!glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_2))
+	{
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		controls->firstMouse = true;
+		return;
+	}
+
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+	//Get screen mouse position this frame
+	double mouseX, mouseY;
+	glfwGetCursorPos(window, &mouseX, &mouseY);
+
+	//If we just started right clicking, set prevMouse values to current position.
+	//This prevents a bug where the camera moves as soon as we click.
+	if (controls->firstMouse) {
+		controls->firstMouse = false;
+		controls->prevMouseX = mouseX;
+		controls->prevMouseY = mouseY;
+	}
+
+	controls->yaw += (mouseX - controls->prevMouseX) * controls->mouseSensitivity;
+	controls->pitch -= (mouseY - controls->prevMouseY) * controls->mouseSensitivity;
+
+	if (controls->pitch > 89)
+	{
+		controls->pitch = 89;
+	}
+	else if (controls->pitch < -89)
+	{
+		controls->pitch = -89;
+	}
+
+	controls->prevMouseX = mouseX;
+	controls->prevMouseY = mouseY;
+
+	float theta = ew::Radians(controls->yaw);
+	float phi = ew::Radians(controls->pitch);
+
+	ew::Vec3 forward = ew::Vec3((cos(theta) * cos(phi)), sin(phi), (sin(theta) * cos(phi)));
+
+	camera->target = camera->position + forward;
+
+	ew::Vec3 right = ew::Normalize(ew::Cross(ew::Vec3(0,1,0), forward));
+	ew::Vec3 up = ew::Normalize(ew::Cross(forward, right));
+
+	if (glfwGetKey(window, GLFW_KEY_W)) {
+		camera->position += forward * controls->moveSpeed * deltaTime;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_S)) {
+		camera->position -= forward * controls->moveSpeed * deltaTime;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_A)) {
+		camera->position += right * controls->moveSpeed * deltaTime;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_D)) {
+		camera->position -= right * controls->moveSpeed * deltaTime;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_E)) {
+		camera->position += up * controls->moveSpeed * deltaTime;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_Q)) {
+		camera->position -= up * controls->moveSpeed * deltaTime;
+	}
+
+}
+
 
 int main() {
 	printf("Initializing...");
@@ -70,7 +146,9 @@ int main() {
 	camera.orthoSize = 6;
 	camera.nearPlane = 0.1f;
 	camera.farPlane = 100;
-	camera.orthographic = true;
+	camera.orthographic = false;
+
+	qm::CameraControls cameraControls;
 
 	//Cube positions
 	for (size_t i = 0; i < NUM_CUBES; i++)
@@ -79,8 +157,17 @@ int main() {
 		cubeTransforms[i].position.y = i / (NUM_CUBES / 2) - 0.5;
 	}
 
+	float prevTime = 0;
+
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
+
+		float time = (float)glfwGetTime(); //Timestamp of current frame
+		float deltaTime = time - prevTime;
+		prevTime = time;
+
+		moveCamera(window, &camera, &cameraControls, deltaTime);
+
 		glClearColor(0.3f, 0.4f, 0.9f, 1.0f);
 		//Clear both color buffer AND depth buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -131,6 +218,21 @@ int main() {
 			}
 			ImGui::DragFloat("Near Plane", &camera.nearPlane, 0.5f);
 			ImGui::DragFloat("Far Plane", &camera.farPlane, 0.5f);
+			ImGui::DragFloat("Yaw", &cameraControls.yaw, 0.5f);
+			ImGui::DragFloat("Pitch", &cameraControls.pitch, 0.5f);
+			if (ImGui::Button("Reset", ImVec2(100, 0)))
+			{
+				camera.position = ew::Vec3(0, 0, 5);
+				camera.target = ew::Vec3(0, 0, 0);
+				camera.fov = 60;
+				camera.aspectRatio = ((float)SCREEN_WIDTH / SCREEN_HEIGHT);
+				camera.orthoSize = 6;
+				camera.nearPlane = 0.1f;
+				camera.farPlane = 100;
+				camera.orthographic = false;
+				cameraControls.yaw = -90;
+				cameraControls.pitch = 0;
+			}
 			ImGui::End();
 			
 			ImGui::Render();
@@ -146,4 +248,3 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
 }
-
