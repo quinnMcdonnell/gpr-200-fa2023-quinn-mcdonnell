@@ -89,11 +89,11 @@ void moveCamera(GLFWwindow* window, qm::Camera* camera, qm::CameraControls* cont
 		camera->position -= right * controls->moveSpeed * deltaTime;
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_E)) {
+	if (glfwGetKey(window, GLFW_KEY_Q)) {
 		camera->position += up * controls->moveSpeed * deltaTime;
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_Q)) {
+	if (glfwGetKey(window, GLFW_KEY_E)) {
 		camera->position -= up * controls->moveSpeed * deltaTime;
 	}
 
@@ -215,11 +215,11 @@ int main() {
 			else
 			{
 				ImGui::DragFloat("FOV", &camera.fov, 0.5f);
+				ImGui::DragFloat("Yaw", &cameraControls.yaw, 0.5f);
+				ImGui::DragFloat("Pitch", &cameraControls.pitch, 0.5f);
 			}
 			ImGui::DragFloat("Near Plane", &camera.nearPlane, 0.5f);
 			ImGui::DragFloat("Far Plane", &camera.farPlane, 0.5f);
-			ImGui::DragFloat("Yaw", &cameraControls.yaw, 0.5f);
-			ImGui::DragFloat("Pitch", &cameraControls.pitch, 0.5f);
 			if (ImGui::Button("Reset", ImVec2(100, 0)))
 			{
 				camera.position = ew::Vec3(0, 0, 5);
