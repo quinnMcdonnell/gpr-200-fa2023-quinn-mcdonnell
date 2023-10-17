@@ -89,11 +89,11 @@ void moveCamera(GLFWwindow* window, qm::Camera* camera, qm::CameraControls* cont
 		camera->position -= right * controls->moveSpeed * deltaTime;
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_Q)) {
+	if (glfwGetKey(window, GLFW_KEY_E)) {
 		camera->position += up * controls->moveSpeed * deltaTime;
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_E)) {
+	if (glfwGetKey(window, GLFW_KEY_Q)) {
 		camera->position -= up * controls->moveSpeed * deltaTime;
 	}
 
