@@ -66,9 +66,8 @@ void moveCamera(GLFWwindow* window, qm::Camera* camera, qm::CameraControls* cont
 	float theta = ew::Radians(controls->yaw);
 	float phi = ew::Radians(controls->pitch);
 
-	ew::Vec3 forward = ew::Vec3((cos(theta) * cos(phi)), sin(phi), (sin(theta) * cos(phi)));
+	ew::Vec3 forward = ew::Vec3((sin(theta) * cos(phi)), sin(phi), (-cos(theta) * cos(phi)));
 
-	camera->target = camera->position + forward;
 
 	ew::Vec3 right = ew::Normalize(ew::Cross(ew::Vec3(0,1,0), forward));
 	ew::Vec3 up = ew::Normalize(ew::Cross(forward, right));
@@ -97,6 +96,7 @@ void moveCamera(GLFWwindow* window, qm::Camera* camera, qm::CameraControls* cont
 		camera->position -= up * controls->moveSpeed * deltaTime;
 	}
 
+	camera->target = camera->position + forward;
 }
 
 
@@ -215,11 +215,15 @@ int main() {
 			else
 			{
 				ImGui::DragFloat("FOV", &camera.fov, 0.5f);
-				ImGui::DragFloat("Yaw", &cameraControls.yaw, 0.5f);
-				ImGui::DragFloat("Pitch", &cameraControls.pitch, 0.5f);
 			}
 			ImGui::DragFloat("Near Plane", &camera.nearPlane, 0.5f);
 			ImGui::DragFloat("Far Plane", &camera.farPlane, 0.5f);
+			
+			ImGui::Text("Camera Controller");
+			ImGui::Text("Yaw:%f", cameraControls.yaw);
+			ImGui::Text("Pitch:%f", cameraControls.pitch);
+			ImGui::DragFloat("Move Speed", &cameraControls.moveSpeed, 0.5f);
+
 			if (ImGui::Button("Reset", ImVec2(100, 0)))
 			{
 				camera.position = ew::Vec3(0, 0, 5);
@@ -232,6 +236,7 @@ int main() {
 				camera.orthographic = false;
 				cameraControls.yaw = -90;
 				cameraControls.pitch = 0;
+				cameraControls.moveSpeed = 5.0f;
 			}
 			ImGui::End();
 			
