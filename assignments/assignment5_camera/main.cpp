@@ -234,7 +234,7 @@ int main() {
 				camera.nearPlane = 0.1f;
 				camera.farPlane = 100;
 				camera.orthographic = false;
-				cameraControls.yaw = -90;
+				cameraControls.yaw = 0;
 				cameraControls.pitch = 0;
 				cameraControls.moveSpeed = 5.0f;
 			}
