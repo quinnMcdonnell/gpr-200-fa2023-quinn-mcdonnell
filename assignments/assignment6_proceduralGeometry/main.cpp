@@ -87,10 +87,15 @@ int main() {
 	ew::MeshData planeMeshData = qm::createPlane(5, 10);
 	ew::Mesh planeMesh(planeMeshData);
 
+	//Create Cylinder
+	ew::MeshData cylinderMeshData = qm::createCylinder(1, 2, 10);
+	ew::Mesh cylinderMesh(cylinderMeshData);
 
 	//Initialize transforms
 	ew::Transform cubeTransform;
 	ew::Transform planeTransform;
+	ew::Transform cylinderTransform;
+	cylinderTransform.position = ew::Vec3(-1.0f, 0.0f, 0.0f);
 	planeTransform.position = ew::Vec3(1.0f, 0.0f, 0.0f);
 
 
@@ -134,6 +139,9 @@ int main() {
 		shader.setMat4("_Model", planeTransform.getModelMatrix());
 		planeMesh.draw((ew::DrawMode)appSettings.drawAsPoints);
 
+		//Draw Cylinder
+		shader.setMat4("_Model", cylinderTransform.getModelMatrix());
+		cylinderMesh.draw((ew::DrawMode)appSettings.drawAsPoints);
 
 		//Render UI
 		{

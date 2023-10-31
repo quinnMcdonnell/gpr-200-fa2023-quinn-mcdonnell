@@ -14,37 +14,102 @@ namespace qm
 		float topY = height / 2;
 		float bottomY = -topY;
 
-		data.vertices.push_back({ 0,topY,0 });
+		v.pos = ew::Vec3(0, topY, 0);
+		v.normal = ew::Vec3(0, 1, 0);
+		v.uv = ew::Vec2(0.5f, 0.5f);
+
+		data.vertices.push_back(v);
 
 		float thetaStep = 6.28 / numSegments; //see how to get pi
 		
+		for (int dupe = 0; dupe < 2; dupe++) {
+			for (int i = 0; i < numSegments; i++)
+			{
+				float theta = i * thetaStep;
+				v.pos.x = cos(theta) * radius;
+				v.pos.z = sin(theta) * radius;
+				v.pos.y = topY;
+
+				if (dupe == 0)
+				{
+					v.normal = ew::Vec3(0, 1, 0);
+					v.uv = ew::Vec2((float)(v.pos.x), (float)(v.pos.z)) + ew::Vec2(0.5f, 0.5f);
+				}
+				else if (dupe == 1)
+				{
+					v.normal = ew::Vec3(0,topY,0) + v.pos;
+					v.uv = ew::Vec2(v.pos.x,1);
+				}
+
+				data.vertices.push_back(v);
+			}
+		}
 		for (int dupe = 0; dupe < 2; dupe++)
 		{
 			for (int i = 0; i < numSegments; i++)
 			{
 				float theta = i * thetaStep;
-				theta = ew::Radians(theta);
 				v.pos.x = cos(theta) * radius;
 				v.pos.z = sin(theta) * radius;
-				v.pos.y = topY;
+				v.pos.y = bottomY;
+
+				if (dupe == 0)
+				{
+					v.normal = ew::Vec3(0, bottomY, 0) + v.pos;
+					v.uv = ew::Vec2(v.pos.x, 0);
+				}
+				else if (dupe == 1)
+				{
+					v.normal = ew::Vec3(0, -1, 0);
+					v.uv = ew::Vec2((float)(v.pos.x), (float)(v.pos.z)) + ew::Vec2(0.5f, 0.5f);
+				}
 
 				data.vertices.push_back(v);
 			}
 		}
 		
+		v.pos = ew::Vec3(0, bottomY, 0);
+		v.normal = ew::Vec3(0, -1, 0);
+		v.uv = ew::Vec2(0.5f, 0.5f);
+		data.vertices.push_back(v);
+
+
+		//Indices are done here
+		int start = 1;
+		int center = 0;
 
 		for (int i = 0; i < numSegments; i++)
 		{
-			float theta = i * thetaStep;
-			theta = ew::Radians(theta);
-			v.pos.x = cos(theta) * radius;
-			v.pos.z = sin(theta) * radius;
-			v.pos.y = bottomY;
-
-			data.vertices.push_back(v);
+			data.indices.push_back(start + i);
+			data.indices.push_back(center);
+			data.indices.push_back(start + i + 1);
 		}
 
-		data.vertices.push_back({ 0,bottomY,0 });
+		start = (2 * numSegments) + 1;
+		center = data.vertices.size() - 1;
+
+		for (int i = 0; i < numSegments; i++)
+		{
+			data.indices.push_back(start + i + 1);
+			data.indices.push_back(center);
+			data.indices.push_back(start + i);
+		}
+		
+		int sideStart = 1;
+		int columns = numSegments + 1;
+
+		for (int i = 0; i < numSegments; i++)
+		{
+			int start = sideStart + 1;
+			data.indices.push_back(start);
+			data.indices.push_back(start + 1);
+			data.indices.push_back(start + columns);
+
+			data.indices.push_back(start + columns + 1);
+			data.indices.push_back(start + columns);
+			data.indices.push_back(start + 1);
+
+		}
 
 		return data;
 	}
@@ -79,8 +144,8 @@ namespace qm
 				data.indices.push_back(start + columns + 1);
 
 				data.indices.push_back(start);
-				data.indices.push_back(start + columns);
 				data.indices.push_back(start + columns + 1);
+				data.indices.push_back(start + columns);
 			}
 		}
 
