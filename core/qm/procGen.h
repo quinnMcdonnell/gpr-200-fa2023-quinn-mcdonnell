@@ -20,10 +20,10 @@ namespace qm
 
 		data.vertices.push_back(v);
 
-		float thetaStep = 6.28 / numSegments; //see how to get pi
+		float thetaStep = 6.28f / (float)numSegments; //see how to get pi
 		
 		for (int dupe = 0; dupe < 2; dupe++) {
-			for (int i = 0; i < numSegments; i++)
+			for (int i = 0; i <= numSegments; i++)
 			{
 				float theta = i * thetaStep;
 				v.pos.x = cos(theta) * radius;
@@ -33,12 +33,12 @@ namespace qm
 				if (dupe == 0)
 				{
 					v.normal = ew::Vec3(0, 1, 0);
-					v.uv = ew::Vec2((float)(v.pos.x), (float)(v.pos.z)) + ew::Vec2(0.5f, 0.5f);
+					v.uv = ew::Vec2(cos(theta) / 2 + 0.5f, sin(theta) / 2 + 0.5f);
 				}
 				else if (dupe == 1)
 				{
-					v.normal = ew::Vec3(0,topY,0) + v.pos;
-					v.uv = ew::Vec2(v.pos.x,1);
+					v.normal = ew::Vec3(cos(theta),0,sin(theta));
+					v.uv = ew::Vec2(((float)i / (float)numSegments), 1);
 				}
 
 				data.vertices.push_back(v);
@@ -46,7 +46,7 @@ namespace qm
 		}
 		for (int dupe = 0; dupe < 2; dupe++)
 		{
-			for (int i = 0; i < numSegments; i++)
+			for (int i = 0; i <= numSegments; i++)
 			{
 				float theta = i * thetaStep;
 				v.pos.x = cos(theta) * radius;
@@ -55,13 +55,13 @@ namespace qm
 
 				if (dupe == 0)
 				{
-					v.normal = ew::Vec3(0, bottomY, 0) + v.pos;
-					v.uv = ew::Vec2(v.pos.x, 0);
+					v.normal = ew::Vec3(cos(theta), 0, sin(theta));
+					v.uv = ew::Vec2(((float)i / (float)numSegments), 0);
 				}
 				else if (dupe == 1)
 				{
 					v.normal = ew::Vec3(0, -1, 0);
-					v.uv = ew::Vec2((float)(v.pos.x), (float)(v.pos.z)) + ew::Vec2(0.5f, 0.5f);
+					v.uv = ew::Vec2(cos(theta)/2 + 0.5f, sin(theta)/2 + 0.5f);
 				}
 
 				data.vertices.push_back(v);
@@ -85,8 +85,8 @@ namespace qm
 			data.indices.push_back(start + i + 1);
 		}
 
-		start = (2 * numSegments) + 1;
-		center = data.vertices.size() - 1;
+		start = data.vertices.size()-(numSegments+2);
+		center = data.vertices.size()-1;
 
 		for (int i = 0; i < numSegments; i++)
 		{
@@ -95,12 +95,12 @@ namespace qm
 			data.indices.push_back(start + i);
 		}
 		
-		int sideStart = 1;
+		int sideStart = numSegments + 2;
 		int columns = numSegments + 1;
 
-		for (int i = 0; i < numSegments; i++)
+		for (int j = 0; j < numSegments; j++)
 		{
-			int start = sideStart + 1;
+			int start = sideStart + j;
 			data.indices.push_back(start);
 			data.indices.push_back(start + 1);
 			data.indices.push_back(start + columns);
@@ -108,7 +108,6 @@ namespace qm
 			data.indices.push_back(start + columns + 1);
 			data.indices.push_back(start + columns);
 			data.indices.push_back(start + 1);
-
 		}
 
 		return data;

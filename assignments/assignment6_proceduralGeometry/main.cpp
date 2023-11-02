@@ -88,7 +88,7 @@ int main() {
 	ew::Mesh planeMesh(planeMeshData);
 
 	//Create Cylinder
-	ew::MeshData cylinderMeshData = qm::createCylinder(1, 2, 10);
+	ew::MeshData cylinderMeshData = qm::createCylinder(0.5f, 0.25f, 10);
 	ew::Mesh cylinderMesh(cylinderMeshData);
 
 	//Initialize transforms
