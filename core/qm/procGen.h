@@ -4,7 +4,66 @@
 
 namespace qm 
 {
-	//qm::MeshData createSphere(float radius, int numSegments){}
+	ew::MeshData createSphere(float radius, int numSegments)
+	{
+		ew::MeshData data;
+		ew::Vertex v;
+
+		//Verices
+		float thetaStep = 6.28f / numSegments;
+		float phiStep = 3.14f / numSegments;
+
+		for (int row = 0; row <= numSegments; row++)
+		{
+			float phi = row * phiStep;
+
+			for (int col = 0; col <= numSegments; col++)
+			{
+				float theta = col * thetaStep;
+				v.pos.x = radius * cos(theta) * sin(phi);
+				v.pos.y = radius * cos(phi);
+				v.pos.z = radius * sin(theta) * sin(phi);
+
+				//UV and Normal here
+				v.normal = ew::Vec3(ew::Normalize(v.pos));
+				v.uv = ew::Vec2((float)(col) / (float)numSegments, (float)(numSegments - row) / (float)numSegments);
+
+				data.vertices.push_back(v);
+			}
+		}
+
+		//Indices
+		int poleStart = 0;
+		int sideStart = numSegments + 1;
+
+		for (int i = 0; i <= numSegments; i++)
+		{
+			data.indices.push_back(sideStart + i);
+			data.indices.push_back(poleStart + i);
+			data.indices.push_back(sideStart + i + 1);
+		}
+
+		int columns = numSegments + 1;
+
+		for (int row = 0; row <= numSegments - 1; row++)
+		{
+			for (int col = 0; col <= numSegments; col++)
+			{
+				int start = row * columns + col;
+
+				data.indices.push_back(start);
+				data.indices.push_back(start + 1);
+				data.indices.push_back(start + columns);
+
+				data.indices.push_back(start + columns + 1);
+				data.indices.push_back(start + columns);
+				data.indices.push_back(start + 1);
+
+			}
+		}
+
+		return data;
+	}
 
 	ew::MeshData createCylinder(float height, float radius, int numSegments)
 	{
