@@ -1,6 +1,6 @@
 #pragma once
-#include <ew/mesh.h>
-#include <ew/ewMath/ewMath.h>
+#include "../ew/ewMath/ewMath.h"
+#include "../ew/mesh.h"
 
 namespace qm 
 {

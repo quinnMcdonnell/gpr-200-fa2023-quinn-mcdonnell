@@ -111,6 +111,7 @@ int main() {
 		shader.setMat4("_Model", cylinderTransform.getModelMatrix());
 		cylinderMesh.draw();
 
+
 		//TODO: Render point lights
 
 		//Render UI
