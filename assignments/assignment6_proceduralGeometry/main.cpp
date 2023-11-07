@@ -79,6 +79,7 @@ int main() {
 	ew::Shader shader("assets/vertexShader.vert", "assets/fragmentShader.frag");
 	unsigned int brickTexture = ew::loadTexture("assets/brick_color.jpg",GL_REPEAT,GL_LINEAR);
 
+
 	//Create cube
 	ew::MeshData cubeMeshData = ew::createCube(0.5f);
 	ew::Mesh cubeMesh(cubeMeshData);
@@ -101,7 +102,7 @@ int main() {
 	ew::Transform cylinderTransform;
 	ew::Transform sphereTransform;
 	cylinderTransform.position = ew::Vec3(-1.0f, 0.0f, 0.0f);
-	planeTransform.position = ew::Vec3(1.0f, 0.0f, 0.0f);
+	planeTransform.position = ew::Vec3(1.0f, -1.0f, 0.0f);
 	sphereTransform.position = ew::Vec3(-2.0f, 0.0f, 0.0f);
 
 
