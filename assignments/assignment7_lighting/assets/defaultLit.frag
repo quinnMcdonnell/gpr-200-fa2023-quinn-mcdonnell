@@ -21,23 +21,35 @@ struct Material
 	float shininess; //Shininess
 };
 
-uniform Light _Light;
+#define MAX_LIGHTS 4
+uniform Light _Lights[MAX_LIGHTS];
+
 uniform Material _Material;
 uniform vec3 _CameraPosition;
 uniform sampler2D _Texture;
 
 void main(){
+	
+	vec4 newTex = texture(_Texture,fs_in.UV);
+
 	vec3 normal = normalize(fs_in.WorldNormal);
 	vec3 position = fs_in.WorldPosition;
-	vec3 LightPosition = _Light.position;
+
+	for(int i = 0; i < MAX_LIGHTS; i++)
+	{
+	vec3 LightPosition = _Lights[i].position;
 	vec3 omega = normalize(LightPosition - position); //Omega Vector
 	vec3 h = normalize(omega + _CameraPosition);
 
-	vec3 Amb = _Light.color * _Material.ambientK;
-	vec3 Dif = _Light.color * _Material.diffuseK * max(dot(omega, normal),0);
-	vec3 Spec = _Light.color * _Material.specular * pow(max(dot(h,normal),0),_Material.shininess);
+	vec3 Amb = _Lights[i].color * _Material.ambientK;
+	vec3 Dif = _Lights[i].color * _Material.diffuseK * max(dot(omega, normal),0);
+	vec3 Spec = _Lights[i].color * _Material.specular * pow(max(dot(h,normal),0),_Material.shininess);
 
 	vec3 I = Amb + Dif + Spec;
-	vec3 shade = I; //figure out how to add to texture
-	FragColor = texture(_Texture,fs_in.UV);
+	newTex.rgb = newTex.rgb * I;
+	}
+
+	
+
+	FragColor = newTex;
 }

@@ -73,6 +73,7 @@ int main() {
 	glEnable(GL_DEPTH_TEST);
 
 	ew::Shader shader("assets/defaultLit.vert", "assets/defaultLit.frag");
+	ew::Shader unlitShader("assets/unlit.vert", "assets/unlit.frag");
 	unsigned int brickTexture = ew::loadTexture("assets/brick_color.jpg",GL_REPEAT,GL_LINEAR);
 
 	//Create cube
@@ -80,6 +81,9 @@ int main() {
 	ew::Mesh planeMesh(ew::createPlane(5.0f, 5.0f, 10));
 	ew::Mesh sphereMesh(ew::createSphere(0.5f, 64));
 	ew::Mesh cylinderMesh(ew::createCylinder(0.5f, 1.0f, 32));
+
+	ew::Mesh unlitsphereMesh(ew::createSphere(0.125f, 32));
+
 
 	//Initialize transforms
 	ew::Transform cubeTransform;
@@ -89,6 +93,36 @@ int main() {
 	planeTransform.position = ew::Vec3(0, -1.0, 0);
 	sphereTransform.position = ew::Vec3(-1.5f, 0.0f, 0.0f);
 	cylinderTransform.position = ew::Vec3(1.5f, 0.0f, 0.0f);
+
+	ew::Transform unlitRed;
+	ew::Transform unlitGreen;
+	ew::Transform unlitYellow;
+	ew::Transform unlitBlue;
+
+
+	//Light Array
+	Light _lights[4];
+	_lights[0].color = ew::Vec3(1,0,0);
+	_lights[0].position = ew::Vec3(1,1,0);
+	unlitRed.position = _lights[0].position;
+
+	_lights[1].color = ew::Vec3(0, 1, 0);
+	_lights[1].position = ew::Vec3(1, 1, -1);
+	unlitGreen.position = _lights[1].position;
+
+	_lights[2].color = ew::Vec3(1, 1, 0);
+	_lights[2].position = ew::Vec3(-1, 1, 0);
+	unlitYellow.position = _lights[2].position;
+
+	_lights[3].color = ew::Vec3(0, 0, 1);
+	_lights[3].position = ew::Vec3(-1, 1, -1);
+	unlitBlue.position = _lights[3].position;
+
+	Material _material;
+	_material.ambientK = 0.2;
+	_material.diffuseK = 0.5;
+	_material.specular = 0.5;
+	_material.shininess = 128;
 
 	resetCamera(camera,cameraController);
 
@@ -112,6 +146,24 @@ int main() {
 		shader.setInt("_Texture", 0);
 		shader.setMat4("_ViewProjection", camera.ProjectionMatrix() * camera.ViewMatrix());
 
+		//TODO: Render point lights
+		shader.setVec3("_Lights[0].position", _lights[0].position);
+		shader.setVec3("_Lights[0].color", _lights[0].color);
+
+		shader.setVec3("_Lights[1].position", _lights[1].position);
+		shader.setVec3("_Lights[1].color", _lights[1].color);
+
+		shader.setVec3("_Lights[2].position", _lights[2].position);
+		shader.setVec3("_Lights[2].color", _lights[2].color);
+
+		shader.setVec3("_Lights[3].position", _lights[3].position);
+		shader.setVec3("_Lights[3].color", _lights[3].color);
+
+		shader.setFloat("_Material.ambientK", _material.ambientK);
+		shader.setFloat("_Material.diffuseK", _material.diffuseK);
+		shader.setFloat("_Material.specular", _material.specular);
+		shader.setFloat("_Material.shininess", _material.shininess);
+
 		//Draw shapes
 		shader.setMat4("_Model", cubeTransform.getModelMatrix());
 		cubeMesh.draw();
@@ -126,7 +178,19 @@ int main() {
 		cylinderMesh.draw();
 
 
-		//TODO: Render point lights
+		unlitShader.use();
+		
+		shader.setMat4("_Model", unlitRed.getModelMatrix());
+		unlitsphereMesh.draw();
+
+		shader.setMat4("_Model", unlitGreen.getModelMatrix());
+		unlitsphereMesh.draw();
+
+		shader.setMat4("_Model", unlitYellow.getModelMatrix());
+		unlitsphereMesh.draw();
+
+		shader.setMat4("_Model", unlitBlue.getModelMatrix());
+		unlitsphereMesh.draw();
 
 		//Render UI
 		{
@@ -155,6 +219,14 @@ int main() {
 			}
 
 			ImGui::ColorEdit3("BG color", &bgColor.x);
+
+			if (ImGui::CollapsingHeader("Material"))
+			{
+				ImGui::DragFloat("Amibence",&_material.ambientK,0.1f,0.0f,1.0f);
+				ImGui::DragFloat("Diffuse", &_material.diffuseK, 0.1f, 0.0f, 1.0f);
+				ImGui::DragFloat("Specular", &_material.specular, 0.1f, 0.0f, 1.0f);
+				ImGui::DragFloat("Shininess", &_material.shininess, 0.1f, 0.0f, 1000.0f);
+			}
 			ImGui::End();
 			
 			ImGui::Render();
