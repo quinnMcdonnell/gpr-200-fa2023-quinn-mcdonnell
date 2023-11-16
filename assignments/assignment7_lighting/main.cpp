@@ -103,19 +103,19 @@ int main() {
 	//Light Array
 	Light _lights[4];
 	_lights[0].color = ew::Vec3(1,0,0);
-	_lights[0].position = ew::Vec3(1,1,0);
+	_lights[0].position = ew::Vec3(5,1,0);
 	unlitRed.position = _lights[0].position;
 
 	_lights[1].color = ew::Vec3(0, 1, 0);
-	_lights[1].position = ew::Vec3(1, 1, -1);
+	_lights[1].position = ew::Vec3(5, 1, -5);
 	unlitGreen.position = _lights[1].position;
 
 	_lights[2].color = ew::Vec3(1, 1, 0);
-	_lights[2].position = ew::Vec3(-1, 1, 0);
+	_lights[2].position = ew::Vec3(0, 1, 5);
 	unlitYellow.position = _lights[2].position;
 
 	_lights[3].color = ew::Vec3(0, 0, 1);
-	_lights[3].position = ew::Vec3(-1, 1, -1);
+	_lights[3].position = ew::Vec3(-5, 1, 5);
 	unlitBlue.position = _lights[3].position;
 
 	Material _material;
@@ -164,6 +164,8 @@ int main() {
 		shader.setFloat("_Material.specular", _material.specular);
 		shader.setFloat("_Material.shininess", _material.shininess);
 
+		shader.setVec3("_CameraPosition", camera.position);
+
 		//Draw shapes
 		shader.setMat4("_Model", cubeTransform.getModelMatrix());
 		cubeMesh.draw();
@@ -179,17 +181,23 @@ int main() {
 
 
 		unlitShader.use();
+
+		unlitShader.setMat4("_ViewProjection", camera.ProjectionMatrix() * camera.ViewMatrix());
 		
-		shader.setMat4("_Model", unlitRed.getModelMatrix());
+		unlitShader.setMat4("_Model", unlitRed.getModelMatrix());
+		unlitShader.setVec3("_Color",_lights[0].color);
 		unlitsphereMesh.draw();
 
-		shader.setMat4("_Model", unlitGreen.getModelMatrix());
+		unlitShader.setMat4("_Model", unlitGreen.getModelMatrix());
+		unlitShader.setVec3("_Color", _lights[1].color);
 		unlitsphereMesh.draw();
 
-		shader.setMat4("_Model", unlitYellow.getModelMatrix());
+		unlitShader.setMat4("_Model", unlitYellow.getModelMatrix());
+		unlitShader.setVec3("_Color", _lights[2].color);
 		unlitsphereMesh.draw();
 
-		shader.setMat4("_Model", unlitBlue.getModelMatrix());
+		unlitShader.setMat4("_Model", unlitBlue.getModelMatrix());
+		unlitShader.setVec3("_Color", _lights[3].color);
 		unlitsphereMesh.draw();
 
 		//Render UI
@@ -227,6 +235,23 @@ int main() {
 				ImGui::DragFloat("Specular", &_material.specular, 0.1f, 0.0f, 1.0f);
 				ImGui::DragFloat("Shininess", &_material.shininess, 0.1f, 0.0f, 1000.0f);
 			}
+
+			ImGui::CollapsingHeader("Light 1");
+			ImGui::DragFloat3("Color", &_lights[0].color.x, 0.05f, 0.0f, 1.0f);
+			ImGui::DragFloat3("Position", &_lights[0].position.x, 0.5f);
+
+			ImGui::CollapsingHeader("Light 2");
+			ImGui::DragFloat3("Color", &_lights[1].color.x, 0.05f, 0.0f, 1.0f);
+			ImGui::DragFloat3("Position", &_lights[1].position.x, 0.5f);
+
+			ImGui::CollapsingHeader("Light 3");
+			ImGui::DragFloat3("Color", &_lights[2].color.x, 0.05f, 0.0f, 1.0f);
+			ImGui::DragFloat3("Position", &_lights[2].position.x, 0.5f);
+
+			ImGui::CollapsingHeader("Light 4");
+			ImGui::DragFloat3("Color", &_lights[3].color.x, 0.05f, 0.0f, 1.0f);
+			ImGui::DragFloat3("Position", &_lights[3].position.x, 0.5f);
+
 			ImGui::End();
 			
 			ImGui::Render();
