@@ -82,7 +82,10 @@ int main() {
 	ew::Mesh sphereMesh(ew::createSphere(0.5f, 64));
 	ew::Mesh cylinderMesh(ew::createCylinder(0.5f, 1.0f, 32));
 
-	ew::Mesh unlitsphereMesh(ew::createSphere(0.125f, 32));
+	ew::Mesh unlitsphereMeshR(ew::createSphere(0.125f, 32));
+	ew::Mesh unlitsphereMeshG(ew::createSphere(0.125f, 32));
+	ew::Mesh unlitsphereMeshY(ew::createSphere(0.125f, 32));
+	ew::Mesh unlitsphereMeshB(ew::createSphere(0.125f, 32));
 
 
 	//Initialize transforms
@@ -102,6 +105,7 @@ int main() {
 
 	//Light Array
 	Light _lights[4];
+	int lights = 4;
 	_lights[0].color = ew::Vec3(1,0,0);
 	_lights[0].position = ew::Vec3(5,1,0);
 	unlitRed.position = _lights[0].position;
@@ -159,6 +163,8 @@ int main() {
 		shader.setVec3("_Lights[3].position", _lights[3].position);
 		shader.setVec3("_Lights[3].color", _lights[3].color);
 
+		shader.setInt("numLights", lights);
+
 		shader.setFloat("_Material.ambientK", _material.ambientK);
 		shader.setFloat("_Material.diffuseK", _material.diffuseK);
 		shader.setFloat("_Material.specular", _material.specular);
@@ -186,19 +192,19 @@ int main() {
 		
 		unlitShader.setMat4("_Model", unlitRed.getModelMatrix());
 		unlitShader.setVec3("_Color",_lights[0].color);
-		unlitsphereMesh.draw();
+		unlitsphereMeshR.draw();
 
 		unlitShader.setMat4("_Model", unlitGreen.getModelMatrix());
 		unlitShader.setVec3("_Color", _lights[1].color);
-		unlitsphereMesh.draw();
+		unlitsphereMeshG.draw();
 
 		unlitShader.setMat4("_Model", unlitYellow.getModelMatrix());
 		unlitShader.setVec3("_Color", _lights[2].color);
-		unlitsphereMesh.draw();
+		unlitsphereMeshY.draw();
 
 		unlitShader.setMat4("_Model", unlitBlue.getModelMatrix());
 		unlitShader.setVec3("_Color", _lights[3].color);
-		unlitsphereMesh.draw();
+		unlitsphereMeshB.draw();
 
 		//Render UI
 		{
@@ -230,27 +236,40 @@ int main() {
 
 			if (ImGui::CollapsingHeader("Material"))
 			{
-				ImGui::DragFloat("Amibence",&_material.ambientK,0.1f,0.0f,1.0f);
-				ImGui::DragFloat("Diffuse", &_material.diffuseK, 0.1f, 0.0f, 1.0f);
-				ImGui::DragFloat("Specular", &_material.specular, 0.1f, 0.0f, 1.0f);
-				ImGui::DragFloat("Shininess", &_material.shininess, 0.1f, 0.0f, 1000.0f);
+				ImGui::DragFloat("Amibence",&_material.ambientK,0.01f,0.0f,1.0f);
+				ImGui::DragFloat("Diffuse", &_material.diffuseK, 0.01f, 0.0f, 1.0f);
+				ImGui::DragFloat("Specular", &_material.specular, 0.01f, 0.0f, 1.0f);
+				ImGui::DragFloat("Shininess", &_material.shininess, 1.0f, 2.0f, 500.0f);
+			}
+			ImGui::DragInt("Number of Lights", &lights, 1, 0, 4);
+			
+			if (ImGui::CollapsingHeader("Light 1"))
+			{
+				ImGui::DragFloat3("Color", &_lights[0].color.x, 0.05f, 0.0f, 1.0f);
+				ImGui::DragFloat3("Position", &_lights[0].position.x, 0.5f);
+				unlitRed.position = _lights[0].position;
 			}
 
-			ImGui::CollapsingHeader("Light 1");
-			ImGui::DragFloat3("Color", &_lights[0].color.x, 0.05f, 0.0f, 1.0f);
-			ImGui::DragFloat3("Position", &_lights[0].position.x, 0.5f);
+			if (ImGui::CollapsingHeader("Light 2"))
+			{
+				ImGui::DragFloat3("Color", &_lights[1].color.x, 0.05f, 0.0f, 1.0f);
+				ImGui::DragFloat3("Position", &_lights[1].position.x, 0.5f);
+				unlitGreen.position = _lights[1].position;
+			}
 
-			ImGui::CollapsingHeader("Light 2");
-			ImGui::DragFloat3("Color", &_lights[1].color.x, 0.05f, 0.0f, 1.0f);
-			ImGui::DragFloat3("Position", &_lights[1].position.x, 0.5f);
+			if (ImGui::CollapsingHeader("Light 3"))
+			{
+				ImGui::DragFloat3("Color", &_lights[2].color.x, 0.05f, 0.0f, 1.0f);
+				ImGui::DragFloat3("Position", &_lights[2].position.x, 0.5f);
+				unlitYellow.position = _lights[2].position;
+			}
 
-			ImGui::CollapsingHeader("Light 3");
-			ImGui::DragFloat3("Color", &_lights[2].color.x, 0.05f, 0.0f, 1.0f);
-			ImGui::DragFloat3("Position", &_lights[2].position.x, 0.5f);
-
-			ImGui::CollapsingHeader("Light 4");
-			ImGui::DragFloat3("Color", &_lights[3].color.x, 0.05f, 0.0f, 1.0f);
-			ImGui::DragFloat3("Position", &_lights[3].position.x, 0.5f);
+			if (ImGui::CollapsingHeader("Light 4"))
+			{
+				ImGui::DragFloat3("Color", &_lights[3].color.x, 0.05f, 0.0f, 1.0f);
+				ImGui::DragFloat3("Position", &_lights[3].position.x, 0.5f);
+				unlitBlue.position = _lights[3].position;
+			}
 
 			ImGui::End();
 			

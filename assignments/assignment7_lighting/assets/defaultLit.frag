@@ -23,6 +23,7 @@ struct Material
 
 #define MAX_LIGHTS 4
 uniform Light _Lights[MAX_LIGHTS];
+uniform int numLights;
 
 uniform Material _Material;
 uniform vec3 _CameraPosition;
@@ -30,6 +31,14 @@ uniform sampler2D _Texture;
 
 void main(){
 	
+	
+
+	int numOfLights = numLights;
+	if(numLights > 4)
+	{
+		numOfLights = 4;
+	}
+
 	vec4 newTex = texture(_Texture,fs_in.UV);
 	vec3 texColor = newTex.rgb;
 
@@ -39,7 +48,7 @@ void main(){
 
 	vec3 totalLight = vec3(0);
 
-	for(int i = 0; i < MAX_LIGHTS; i++)
+	for(int i = 0; i < numOfLights; i++)
 	{
 	vec3 LightPosition = _Lights[i].position;
 	vec3 omega = normalize(LightPosition - position); //Omega Vector
