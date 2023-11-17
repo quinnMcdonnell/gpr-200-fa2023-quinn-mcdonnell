@@ -243,7 +243,7 @@ int main() {
 			}
 			ImGui::DragInt("Number of Lights", &lights, 1, 0, 4);
 			
-			if (ImGui::CollapsingHeader("Light 1"))
+			if (ImGui::CollapsingHeader("Light"))
 			{
 				ImGui::DragFloat3("Color", &_lights[0].color.x, 0.05f, 0.0f, 1.0f);
 				ImGui::DragFloat3("Position", &_lights[0].position.x, 0.5f);
